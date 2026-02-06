@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Issue Book</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="login-container">
+  <h2>Issue Book</h2>
+
+  <div class="input-group">
+    <label>Name</label>
+    <input id="username" readonly>
+  </div>
+
+  <div class="input-group">
+    <label>Mobile</label>
+    <input id="usermobile" readonly>
+  </div>
+
+  <div class="input-group">
+    <label>Book</label>
+    <input id="book">
+  </div>
+
+  <div class="input-group">
+    <label>Author</label>
+    <input id="author">
+  </div>
+
+  <div class="input-group">
+    <label>Issue Date</label>
+    <input type="date" id="issueDate">
+  </div>
+
+  <div class="input-group">
+    <label>Return Date</label>
+    <input type="date" id="returnDate" readonly>
+  </div>
+  <button onclick="issueBook()">Issue</button>
+</div>
+
+<script src="library.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="login-container">
+  <h2>Login</h2>
+
+  <form onsubmit="return validate()">
+
+    <div class="input-group">
+      <label>Mobile</label>
+      <input id="mobile" required>
+    </div>
+
+    <div class="input-group">
+      <label>Password</label>
+      <input id="password" type="password" required>
+    </div>
+
+    <button type="submit">Login</button>
+
+    <p class="forgot">
+      <a href="forgot.html">Forgot Password?</a>
+    </p>
+
+    <p class="register-text">
+      New user? <a href="register.html">Register</a>
+    </p>
+  </form>
+</div>
+
+<script>
+function validate() {
+    let mobile = document.getElementById("mobile").value;
+    let password = document.getElementById("password").value;
+
+    let users = JSON.parse(localStorage.getItem("users")) || [];
+    let user = users.find(u => u.mobile === mobile && u.password === password);
+
+    if (!user) {
+        alert("Invalid credentials");
+        return false;
+    }
+
+    localStorage.setItem("currentUser", JSON.stringify(user));
+    window.location.href = "home.html";
+    return false;
+}
+</script>
+
+</body>
+</html>

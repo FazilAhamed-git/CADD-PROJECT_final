@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Library Management System</title>
+    <link rel="stylesheet" href="style1.css">
+</head>
+<body>
+<!-- ================= NAVBAR ================= -->
+<header class="navbar">
+    <div class="logo">LibraryMS</div>
+    <nav>
+        <a href="#about">About</a>
+        <a href="#features">Features</a>
+        <a href="#contact">Contact</a>
+        <a href="login.html" class="login-btn">Login</a>
+        <a href="book.html" class="issue-btn">Issue / Return</a>
+
+        <!-- PROFILE -->
+        <div class="profile-area" id="profileArea" style="display:none;">
+            <div class="profile-circle" onclick="toggleProfile(event)">
+                <span id="profileInitial">U</span>
+            </div>
+
+            <div class="profile-dropdown" id="profileDropdown">
+                <div class="profile-header">
+                    <h4 id="pName"></h4>
+                    <p id="pEmail"></p>
+                </div>
+                <div class="profile-details">
+                    <p><strong>Mobile:</strong> <span id="pMobile"></span></p>
+                </div>
+                <div class="profile-actions">
+                    <button onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<!-- ================= HERO ================= -->
+<section class="hero">
+    <h1>Library Management System</h1>
+    <p>
+        A simple and efficient solution to manage library operations
+        digitally and effectively.
+    </p>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about" class="section">
+    <h2>About</h2>
+    <p>
+        <strong>Library Management System</strong> is a web-based application designed
+        to simplify and automate library operations. It helps manage books, users,
+        and issue/return activities efficiently.
+    </p>
+    <p>
+        This system reduces manual work and provides a digital platform where users
+        can easily track book availability and history.
+    </p>
+    <p>
+        Developed using <strong>HTML, CSS, Java and MySQL</strong> with scalable design.
+    </p>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section id="features" class="section light">
+    <h2>Features</h2>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <img src="images\e-library management.png" alt="User Management">
+            <h3>User Management</h3>
+            <p>Manage student and staff accounts efficiently.</p>
+        </div>
+
+        <div class="feature-card">
+            <img src="images/e-learning-isometric-composition/21094.jpg" alt="Book Records">
+            <h3>Book Records</h3>
+            <p>Maintain detailed book information digitally.</p>
+        </div>
+
+        <div class="feature-card">
+            <img src="images\gradient-glossary-illustration\8804870.jpg" alt="Issue Return">
+            <h3>Issue & Return</h3>
+            <p>Track book borrowing and returns accurately.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ================= HISTORY ================= -->
+<section id="history" class="section">
+    <h2>Recent Book History</h2>
+    <div id="historyContainer"></div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="contact">
+    <h2>Contact Us</h2>
+    <div class="contact-card">
+        <p><strong>Email:</strong> fazilronaldo007@gmail.com</p>
+        <p><strong>Phone:</strong> +91 99699 69670</p>
+        <p><strong>Location:</strong> Chennai, Tamilnadu, India</p>
+    </div>
+</section>
+
+<!-- ================= SCRIPT ================= -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+
+    if (user) {
+        document.getElementById("profileArea").style.display = "block";
+        document.querySelector(".login-btn").style.display = "none";
+
+        document.getElementById("pName").innerText = user.name;
+        document.getElementById("pEmail").innerText = user.email;
+        document.getElementById("pMobile").innerText = user.mobile;
+        document.getElementById("profileInitial").innerText =
+            user.name.charAt(0).toUpperCase();
+
+        displayRecentHistory(user.mobile);
+    }
+
+    window.toggleProfile = function (event) {
+        event.stopPropagation();
+        const dropdown = document.getElementById("profileDropdown");
+        dropdown.style.display =
+            dropdown.style.display === "block" ? "none" : "block";
+    };
+
+    window.logout = function () {
+        localStorage.removeItem("currentUser");
+        window.location.href = "home.html";
+    };
+
+    document.addEventListener("click", function (e) {
+        const profileArea = document.getElementById("profileArea");
+        const dropdown = document.getElementById("profileDropdown");
+        if (profileArea && !profileArea.contains(e.target)) {
+            dropdown.style.display = "none";
+        }
+    });
+});
+
+/* ===== SHOW HISTORY ===== */
+function displayRecentHistory(mobile) {
+    const issues = JSON.parse(localStorage.getItem("issues")) || [];
+    const userIssues = issues.filter(issue => issue.mobile === mobile);
+
+    const container = document.getElementById("historyContainer");
+    container.innerHTML = "";
+
+    if (userIssues.length === 0) {
+        container.innerHTML = "<p>No books issued yet.</p>";
+        return;
+    }
+
+    userIssues.reverse().forEach(issue => {
+        container.innerHTML += `
+            <div class="history-item">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h4>${issue.book}</h4>
+                    <span onclick="deleteHistory(${issue.id})"
+                          style="cursor:pointer;color:#dc3545;font-size:18px;"
+                          title="Delete">🗑️</span>
+                </div>
+                <p><strong>Author:</strong> ${issue.author}</p>
+                <p><strong>Issue Date:</strong> ${issue.issueDate}</p>
+                <p><strong>Return Date:</strong> ${issue.returnDate}</p>
+                <p><strong>Status:</strong> ${issue.status}</p>
+            </div>
+        `;
+    });
+}
+
+/* ===== DELETE HISTORY ===== */
+function deleteHistory(issueId) {
+    if (!confirm("Delete this record?")) return;
+
+    let issues = JSON.parse(localStorage.getItem("issues")) || [];
+    issues = issues.filter(issue => issue.id !== issueId);
+    localStorage.setItem("issues", JSON.stringify(issues));
+
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    displayRecentHistory(user.mobile);
+}
+</script>
+
+</body>
+</html>

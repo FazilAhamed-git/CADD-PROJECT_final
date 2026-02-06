@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Forgot Password | LibraryMS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="forgot-container">
+  <div class="forgot-card">
+    <h1>Forgot Password</h1>
+
+    <form onsubmit="return resetPassword()">
+      <input
+        id="email"
+        type="email"
+        placeholder="Enter registered email"
+        required
+      >
+
+      <button type="submit">Reset</button>
+    </form>
+
+    <p id="msg" style="margin-top:15px;font-weight:bold;"></p>
+
+    <a href="login.html">Back to login</a>
+  </div>
+</div>
+
+<script>
+function resetPassword() {
+    const email = document.getElementById("email").value.trim();
+    const msg = document.getElementById("msg");
+
+    const users = JSON.parse(localStorage.getItem("users")) || [];
+
+    if (users.length === 0) {
+        alert("No users registered");
+        return false;
+    }
+
+    const user = users.find(u => u.email === email);
+
+    if (!user) {
+        msg.style.color = "red";
+        msg.innerText = "Email not registered";
+        return false;
+    }
+
+    msg.style.color = "green";
+    msg.innerHTML = `
+      Password reset successful (simulation)<br>
+      <strong>Password:</strong> ${user.password}
+    `;
+
+    alert("Password found! Check below.");
+    return false; // 🔥 stops page reload
+}
+</script>
+
+</body>
+</html>
